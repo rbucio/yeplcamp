@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Yelpcamp Campgrounds</title>
-    </head>
-    <body>
+<% include ./partials/header %>
+
         <h1>Campgrounds</h1>
-        <%= campgrounds %>
-    </body>
-</html>
+        <% campgrounds.forEach(function(campground) { %>
+            <div>
+                <h3><%= campground.name %></h3>
+                <img src="<%= campground.image %>">
+            </div>
+        <% }) %>
+
+<% include ./partials/footer %>
