@@ -11,7 +11,8 @@ mongoose.connect('mongodb://localhost/yelpCamp',{useMongoClient: true}, function
 
 var campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    desc: String
 });
 
 var Campground = mongoose.model('Campground', campgroundSchema);
@@ -37,12 +38,16 @@ app.get('/campgrounds', function(req, res) {
 
 app.post('/campgrounds', function(req, res) {
 
-    // get data from form and add to campgrounds array
+    // GET DATA FROM FORM
     let name = req.body.name;
     let image = req.body.image;
+    let description = req.body.description;
+
+    // NEW CAMPGROUND OBJECT
     let newCampground = {
         name: name,
-        image: image
+        image: image,
+        desc: description
     }
 
     // CREATE CAMPGROUND
@@ -60,6 +65,20 @@ app.post('/campgrounds', function(req, res) {
 
 app.get('/campgrounds/new', function(req, res) {
     res.render('new')
+});
+
+app.get('/campgrounds/:id', function(req, res) {
+
+    Campground.findById(req.params.id, function(err, camp) {
+
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('show', {campground: camp});
+        }
+
+    });
+
 });
 
 app.listen(3000, function() {
