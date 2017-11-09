@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 const app = express();
 
 
@@ -12,6 +14,7 @@ mongoose.connect('mongodb://localhost/yelpCamp',{useMongoClient: true}, function
 // REQUIRE MODELS
 const Comment = require('./models/comment');
 const Campground = require('./models/campground');
+const User = require('./models/user')
 
 
 app.use(bodyParser.urlencoded({extended: true}));
