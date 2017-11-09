@@ -16,6 +16,18 @@ const Comment = require('./models/comment');
 const Campground = require('./models/campground');
 const User = require('./models/user')
 
+// PASSPORT CONFIG
+app.use(require('express-session')({
+    secret: 'Secret Key',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
@@ -114,6 +126,32 @@ app.post('/campgrounds/:id/comments', function(req, res) {
                 }
             });
         }
+    });
+});
+
+
+// ================================
+// AUTH ROUTES
+// ================================
+
+
+// SHOW REGISTER FORM
+app.get('/register', function(req, res) {
+    res.render('register');
+});
+
+// HANDLE USER REGISTRATION
+app.post('/register', function(req, res) {
+
+    let newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, function(err, user) {
+        if (err) {
+            console.log(err);
+            return res.render('register');
+        }
+        passport.authenticate('local')(req, res, function(){
+            res.redirect('/campgrounds');
+        })
     });
 });
 
