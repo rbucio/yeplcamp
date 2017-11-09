@@ -4,18 +4,14 @@ const mongoose = require('mongoose');
 const app = express();
 
 
-// CAMPGROUND SCHEMA
+// CONNECT TO DATABASE
 mongoose.connect('mongodb://localhost/yelpCamp',{useMongoClient: true}, function() {
     console.log('Connection to database successful');
 });
 
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    desc: String
-});
-
-var Campground = mongoose.model('Campground', campgroundSchema);
+// REQUIRE MODELS
+const Comment = require('./models/comment');
+const Campground = require('./models/campground')
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -31,7 +27,7 @@ app.get('/campgrounds', function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            res.render('campgrounds', {campgrounds: campgrounds});
+            res.render('campgrounds/campgrounds', {campgrounds: campgrounds});
         }
     });
 });
@@ -64,7 +60,7 @@ app.post('/campgrounds', function(req, res) {
 });
 
 app.get('/campgrounds/new', function(req, res) {
-    res.render('new')
+    res.render('campgrounds/new')
 });
 
 app.get('/campgrounds/:id', function(req, res) {
@@ -74,9 +70,25 @@ app.get('/campgrounds/:id', function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            res.render('show', {campground: camp});
+            res.render('campgrounds/show', {campground: camp});
         }
 
+    });
+
+});
+// ============================
+// COMMENTS ROUTES
+// ============================
+app.get('/campgrounds/:id/comments/new', function(req, res) {
+
+    Campground.findById(req.params.id, function(err, camp) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('on the comments page');
+            console.log(camp);
+            res.render('comments/new', {campground: camp});
+        }
     });
 
 });
