@@ -28,8 +28,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
+// GENERAL MIDDLEWARE
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(function(req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
+});
+
 app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {
@@ -47,7 +52,7 @@ app.get('/campgrounds', function(req, res) {
     });
 });
 
-app.post('/campgrounds', function(req, res) {
+app.post('/campgrounds', isLoggedIn, function(req, res) {
 
     // GET DATA FROM FORM
     let name = req.body.name;
@@ -74,7 +79,7 @@ app.post('/campgrounds', function(req, res) {
 
 });
 
-app.get('/campgrounds/new', function(req, res) {
+app.get('/campgrounds/new', isLoggedIn, function(req, res) {
     res.render('campgrounds/new')
 });
 
