@@ -3,12 +3,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <p class="lead"><a href="/campgrounds">Back to Campgrounds</a></p>
+                <p class="lead">Campground Details</p>
                 <div class="list-group">
                     <li class="list-group-item">Info 1</li>
                     <li class="list-group-item">Info 2</li>
                     <li class="list-group-item">Info 3</li>
                 </div>
+                <p><a href="/campgrounds"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to Campgrounds</a></p>
             </div>
             <div class="col-md-9">
                 <div class="thumbnail">
@@ -17,6 +18,13 @@
                         <h4 class="pull-right">$9.99</h4>
                         <h4><%= campground.name %></h4>
                         <p><%= campground.desc %></p>
+                        <p><em>Submitted by <%= campground.createdBy %></em></p>
+                        <% if (currentUser != null) {%>
+                            <% if (campground.createdBy === currentUser.username) { %>
+                                <hr>
+                                <a href="/campgrounds/<%= campground._id %>/edit" class="btn btn-warning">Edit</a>
+                            <% } %>
+                        <% } %>
                     </div>
                 </div>
                 <div class="well">

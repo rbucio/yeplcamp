@@ -27,12 +27,14 @@ router.post('/campgrounds', isLoggedIn, function(req, res) {
     let name = req.body.name;
     let image = req.body.image;
     let description = req.body.description;
+    let createdBy = req.user.username;
 
     // NEW CAMPGROUND OBJECT
     let newCampground = {
         name: name,
         image: image,
-        desc: description
+        desc: description,
+        createdBy: createdBy
     }
 
     // CREATE CAMPGROUND
@@ -71,6 +73,43 @@ router.get('/campgrounds/:id', function(req, res) {
 
     });
 
+});
+
+//
+// DISPLAY FORM WITH DATA OF CAMPGROUND TO EDIT
+//
+router.get('/campgrounds/:id/edit', isLoggedIn, function(req, res) {
+
+    // FIND CAMPGROUND TO EDIT
+    Campground.findById(req.params.id, function(err, camp) {
+
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('campgrounds/edit', { campground: camp });
+        }
+    });
+});
+
+//
+// HANDLE UPDATE LOGIC
+//
+router.post('/campgrounds/:id', function(req, res) {
+
+    let data = {
+        name: req.body.name,
+        image: req.body.image,
+        desc: req.body.description
+    }
+
+    Campground.findByIdAndUpdate(req.params.id, data, function(err) {
+        if (err) {
+            console.log(err);
+            res.redirect('/campgrounds');
+        } else {
+            res.redirect('/campgrounds/' + req.params.id);
+        }
+    })
 });
 
 // IS LOGGED IN MIDDLEWARE

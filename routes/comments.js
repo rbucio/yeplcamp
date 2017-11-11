@@ -33,7 +33,7 @@ router.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
         } else {
 
             // STORE FORM INFO
-            let name = req.body.name;
+            let name = req.user.username;
             let comment = req.body.comment;
             let newComment = { name: name, comment: comment };
 
