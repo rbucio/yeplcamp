@@ -94,7 +94,7 @@ router.get('/campgrounds/:id/edit', isLoggedIn, function(req, res) {
 //
 // HANDLE UPDATE LOGIC
 //
-router.post('/campgrounds/:id', function(req, res) {
+router.post('/campgrounds/:id', isLoggedIn, function(req, res) {
 
     let data = {
         name: req.body.name,
@@ -110,6 +110,23 @@ router.post('/campgrounds/:id', function(req, res) {
             res.redirect('/campgrounds/' + req.params.id);
         }
     })
+});
+
+//
+// DESTROY CAMPGROUND
+//
+router.get('/campgrounds/:id/delete', isLoggedIn, function(req, res) {
+
+    // FIND CAMPGROUND TO DESTROY FROM DB
+    Campground.findByIdAndRemove(req.params.id, function(err) {
+        if (err) {
+            console.log(err);
+            res.redirect('/campgrounds');
+        } else {
+            console.log('campground deleted');
+            res.redirect('/campgrounds');
+        }
+    });
 });
 
 // IS LOGGED IN MIDDLEWARE

@@ -23,6 +23,7 @@
                             <% if (campground.createdBy === currentUser.username) { %>
                                 <hr>
                                 <a href="/campgrounds/<%= campground._id %>/edit" class="btn btn-warning">Edit</a>
+                                <a href="/campgrounds/<%= campground._id %>/delete" class="btn btn-danger">Delete Campground</a>
                             <% } %>
                         <% } %>
                     </div>
