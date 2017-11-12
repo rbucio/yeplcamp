@@ -43,7 +43,7 @@
                                     <% if (currentUser != null) { %>
                                         <% if (comment.name === currentUser.username) { %>
                                             <hr>
-                                            <a href="#" class="btn text-warning">Edit</a>
+                                            <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit" class="btn text-warning">Edit</a>
                                             <a href="#" class="btn text-danger">Delete</a>
                                         <% } %>
                                     <% } %>

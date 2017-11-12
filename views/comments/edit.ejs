@@ -1,0 +1,20 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Edit Comment</h1>
+
+            <form action="/campgrounds/<%= campgroundId %>/comments/<%= comment._id %>" method="post">
+                <div class="form-group">
+                    <textarea type="text" name="comment" class="form-control"><%= comment.comment %></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit Comment</button>
+            </form>
+            <br>
+            <a href="/campgrounds/<%= campgroundId %>">Go back</a>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>
