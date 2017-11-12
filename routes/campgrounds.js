@@ -3,6 +3,7 @@ const router = express();
 
 // IMPORT MODEL
 const Campground = require('../models/campground');
+const Comment = require('../models/comment');
 
 //
 // SHOW ALL CAMPGROUNDS
@@ -124,7 +125,16 @@ router.get('/campgrounds/:id/delete', isLoggedIn, function(req, res) {
             res.redirect('/campgrounds');
         } else {
             console.log('campground deleted');
-            res.redirect('/campgrounds');
+
+            // DELETE ALL COMMENTS FOR DELETED CAMPGROUND 
+            Comment.find({campId: req.params.id}).remove(function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('deleted comments for campground to delete');
+                    res.redirect('/campgrounds');
+                }
+            });
         }
     });
 });

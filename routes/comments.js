@@ -35,7 +35,8 @@ router.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
             // STORE FORM INFO
             let name = req.user.username;
             let comment = req.body.comment;
-            let newComment = { name: name, comment: comment };
+            let campId = req.params.id;
+            let newComment = { name: name, comment: comment, campId: campId };
 
             // CREATE NEW COMMENT
             Comment.create(newComment, function(err, comment) {

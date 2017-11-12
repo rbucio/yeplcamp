@@ -40,6 +40,13 @@
                                     <strong><%= comment.name %></strong>
                                     <span class="pull-right">10 days ago</span>
                                     <p><%= comment.comment %></p>
+                                    <% if (currentUser != null) { %>
+                                        <% if (comment.name === currentUser.username) { %>
+                                            <hr>
+                                            <a href="#" class="btn text-warning">Edit</a>
+                                            <a href="#" class="btn text-danger">Delete</a>
+                                        <% } %>
+                                    <% } %>
                                 </div>
                             </div>
                         <% }) %>
