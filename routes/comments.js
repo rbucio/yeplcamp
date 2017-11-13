@@ -68,7 +68,7 @@ router.get('/campgrounds/:id/comments/:comment_id/edit', function(req, res) {
 });
 
 //
-// SHOW EDIT FORM
+// HANDLE UPDATING COMMENT
 //
 router.post('/campgrounds/:id/comments/:comment_id', function(req, res) {
     // FIND AND EDIT COMMENT
@@ -79,6 +79,21 @@ router.post('/campgrounds/:id/comments/:comment_id', function(req, res) {
             res.redirect('/campgrounds/' + req.params.id);
         }
     });
+});
+
+//
+// DELETE COMMENT
+//
+router.get('/campgrounds/:id/comments/:comment_id/delete', function(req, res) {
+
+    // FIND AND DELETE
+    Comment.findByIdAndRemove(req.params.comment_id, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect('/campgrounds/' + req.params.id);
+        }
+    })
 });
 
 // IS LOGGED IN MIDDLEWARE
