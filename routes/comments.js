@@ -67,14 +67,19 @@ router.get('/campgrounds/:id/comments/:comment_id/edit', function(req, res) {
     });
 });
 
-// FIND COMMENT TO EDIT
-// Comment.findByIdAndUp(req.params.comment_id, { comment: req.body.comment}, function(err) {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         res.render('comments/edit');
-//     }
-// });
+//
+// SHOW EDIT FORM
+//
+router.post('/campgrounds/:id/comments/:comment_id', function(req, res) {
+    // FIND AND EDIT COMMENT
+    Comment.findByIdAndUpdate(req.params.comment_id, { comment: req.body.comment}, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect('/campgrounds/' + req.params.id);
+        }
+    });
+});
 
 // IS LOGGED IN MIDDLEWARE
 function isLoggedIn(req, res, next) {
