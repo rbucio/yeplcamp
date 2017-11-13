@@ -46,6 +46,7 @@ router.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
                     // PUSH COMMENT INTO ASSOCIATED CAMPGROUND AND REDIRECT
                     camp.comments.push(comment);
                     camp.save();
+                    req.flash('success', 'Comment Added Successfully');
                     res.redirect('/campgrounds/' + camp._id);
                 }
             });
@@ -56,7 +57,7 @@ router.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
 //
 // SHOW EDIT FORM
 //
-router.get('/campgrounds/:id/comments/:comment_id/edit', function(req, res) {
+router.get('/campgrounds/:id/comments/:comment_id/edit', isLoggedIn, function(req, res) {
     // FIND COMMENT TO EDIT
     Comment.findById(req.params.comment_id, function(err, comment){
         if (err) {
@@ -70,12 +71,13 @@ router.get('/campgrounds/:id/comments/:comment_id/edit', function(req, res) {
 //
 // HANDLE UPDATING COMMENT
 //
-router.post('/campgrounds/:id/comments/:comment_id', function(req, res) {
+router.post('/campgrounds/:id/comments/:comment_id', isLoggedIn, function(req, res) {
     // FIND AND EDIT COMMENT
     Comment.findByIdAndUpdate(req.params.comment_id, { comment: req.body.comment}, function(err) {
         if (err) {
             console.log(err);
         } else {
+            req.flash('success', 'Comment Edited Successfully');
             res.redirect('/campgrounds/' + req.params.id);
         }
     });
@@ -84,13 +86,14 @@ router.post('/campgrounds/:id/comments/:comment_id', function(req, res) {
 //
 // DELETE COMMENT
 //
-router.get('/campgrounds/:id/comments/:comment_id/delete', function(req, res) {
+router.get('/campgrounds/:id/comments/:comment_id/delete', isLoggedIn, function(req, res) {
 
     // FIND AND DELETE
     Comment.findByIdAndRemove(req.params.comment_id, function(err) {
         if (err) {
             console.log(err);
         } else {
+            req.flash('success', 'Comment Deleted');
             res.redirect('/campgrounds/' + req.params.id);
         }
     })
@@ -101,6 +104,7 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
+    req.flash('error', 'You must be logged in to do that');
     res.redirect('/login');
 }
 

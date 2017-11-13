@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const flash = require('connect-flash');
 const app = express();
 
 
@@ -30,8 +31,13 @@ passport.deserializeUser(User.deserializeUser());
 
 // GENERAL MIDDLEWARE
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(flash());
+
+// LOCAL VARIABLES
 app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash('error');
+    res.locals.success = req.flash('success');
     next();
 });
 

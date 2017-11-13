@@ -44,6 +44,7 @@ router.post('/campgrounds', isLoggedIn, function(req, res) {
             console.log(err);
         } else {
             // REDIRECT TO CAMPGROUNDS PAGE
+            req.flash('success', 'Campground Created!!')
             res.redirect('/campgrounds');
         }
     })
@@ -108,6 +109,7 @@ router.post('/campgrounds/:id', isLoggedIn, function(req, res) {
             console.log(err);
             res.redirect('/campgrounds');
         } else {
+            req.flash('success', 'Campground Updated Successfully');
             res.redirect('/campgrounds/' + req.params.id);
         }
     })
@@ -124,14 +126,13 @@ router.get('/campgrounds/:id/delete', isLoggedIn, function(req, res) {
             console.log(err);
             res.redirect('/campgrounds');
         } else {
-            console.log('campground deleted');
 
-            // DELETE ALL COMMENTS FOR DELETED CAMPGROUND 
+            // DELETE ALL COMMENTS FOR DELETED CAMPGROUND
             Comment.find({campId: req.params.id}).remove(function (err) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('deleted comments for campground to delete');
+                    req.flash('success', 'Campground Deleted!')
                     res.redirect('/campgrounds');
                 }
             });
@@ -144,6 +145,7 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
+    req.flash('error', 'You must be logged in to do that');
     res.redirect('/login');
 }
 

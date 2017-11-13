@@ -33,10 +33,12 @@ router.post('/register', function(req, res) {
         // RENDER THE REGISTER FORM IF THERE IS AN ERROR
         if (err) {
             console.log(err);
-            return res.render('register');
+            req.flash('error', err.message);
+            return res.redirect('/register');
         }
         // IF NO ERROR LOGIN NEW USER AND REDIRECT TO CAMPGROUNDS PAGE
         passport.authenticate('local')(req, res, function(){
+            req.flash('success', 'Welcome to YelpCamp ' + user.username);
             res.redirect('/campgrounds');
         })
     });
@@ -53,10 +55,12 @@ router.get('/login', function(req, res) {
 // HANDLE LOGIN LOGIC
 //
 router.post('/login', passport.authenticate('local',
-
     {
         successRedirect: '/campgrounds',
-        failureRedirect: '/login'
+        failureRedirect: '/login',
+        failureFlash: true,
+        badRequestMessage: 'Credentials Dont Match',
+        successFlash: 'Welcome Back to YelpCamp'
     }), function(req, res) {
 });
 
@@ -65,15 +69,8 @@ router.post('/login', passport.authenticate('local',
 //
 router.get('/logout', function(req, res) {
     req.logout();
+    req.flash('success', 'You logged out!');
     res.redirect('/campgrounds');
 });
-
-// IS LOGGED IN MIDDLEWARE
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/login');
-}
 
 module.exports = router;
