@@ -5,9 +5,12 @@
             <div class="col-md-3">
                 <p class="lead">Campground Details</p>
                 <div class="list-group">
-                    <li class="list-group-item">Info 1</li>
-                    <li class="list-group-item">Info 2</li>
-                    <li class="list-group-item">Info 3</li>
+                    <li class="list-group-item"><strong>Price:</strong> <span class="pull-right">$<%= campground.price %></span></li>
+                    <li class="list-group-item"><strong>Capacity:</strong> <span class="pull-right"><%= campground.capacity %></span></li>
+                    <li class="list-group-item"><strong>Instructors:</strong> <span class="pull-right"><%= campground.instructors %></span></li>
+                    <li class="list-group-item"><strong>Phone:</strong> <span class="pull-right"><%= campground.phone %></span></li>
+                    <li class="list-group-item"><strong>Website:</strong> <span class="pull-right"><%= campground.website %></span></li>
+                    <li class="list-group-item"><strong>Activities:</strong> <span><%= campground.activities %></span></li>
                 </div>
                 <p><a href="/campgrounds"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to Campgrounds</a></p>
             </div>
@@ -15,8 +18,7 @@
                 <div class="thumbnail">
                     <img src="<%= campground.image %>" alt="">
                     <div class="caption">
-                        <h4 class="pull-right">$9.99</h4>
-                        <h4><%= campground.name %></h4>
+                        <h2><%= campground.name %></h2>
                         <p><%= campground.desc %></p>
                         <p><em>Submitted by <%= campground.createdBy %></em></p>
                         <% if (currentUser != null) {%>

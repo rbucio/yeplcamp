@@ -6,6 +6,30 @@ const campgroundSchema = new mongoose.Schema({
     image: String,
     desc: String,
     createdBy: String,
+    price: {
+        type: String,
+        default: ''
+    },
+    capacity: {
+        type: String,
+        default: ''
+    },
+    instructors: {
+        type: String,
+        default: ''
+    },
+    activities: {
+        type: String,
+        default: ''
+    },
+    phone: {
+        type: String,
+        default: ''
+    },
+    website: {
+        type: String,
+        default: ''
+    },
     comments: [
         {
             type: mongoose.Schema.Types.ObjectId,

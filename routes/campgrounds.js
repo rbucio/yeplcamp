@@ -24,18 +24,18 @@ router.get('/campgrounds', function(req, res) {
 //
 router.post('/campgrounds', isLoggedIn, function(req, res) {
 
-    // STORE DATA FROM FORM
-    let name = req.body.name;
-    let image = req.body.image;
-    let description = req.body.description;
-    let createdBy = req.user.username;
-
     // NEW CAMPGROUND OBJECT
     let newCampground = {
-        name: name,
-        image: image,
-        desc: description,
-        createdBy: createdBy
+        name: req.body.name,
+        image: req.body.image,
+        desc: req.body.description,
+        createdBy: req.user.username,
+        price: req.body.price,
+        capacity: req.body.capacity,
+        instructors: req.body.instructors,
+        activities: req.body.activities,
+        phone: req.body.phone,
+        website: req.body.website
     }
 
     // CREATE CAMPGROUND
@@ -47,9 +47,7 @@ router.post('/campgrounds', isLoggedIn, function(req, res) {
             req.flash('success', 'Campground Created!!')
             res.redirect('/campgrounds');
         }
-    })
-
-
+    });
 });
 
 //
