@@ -1,4 +1,5 @@
 const express = require('express');
+const geocoder = require('geocoder');
 const router = express();
 
 // IMPORT MODEL
@@ -24,28 +25,39 @@ router.get('/campgrounds', function(req, res) {
 //
 router.post('/campgrounds', isLoggedIn, function(req, res) {
 
-    // NEW CAMPGROUND OBJECT
-    let newCampground = {
-        name: req.body.name,
-        image: req.body.image,
-        desc: req.body.description,
-        createdBy: req.user.username,
-        price: req.body.price,
-        capacity: req.body.capacity,
-        instructors: req.body.instructors,
-        activities: req.body.activities,
-        phone: req.body.phone,
-        website: req.body.website
-    }
-
-    // CREATE CAMPGROUND
-    Campground.create(newCampground, function(err) {
+    // GET LOCATION DETAILS
+    geocoder.geocode(req.body.location, function(err, data) {
         if (err) {
-            console.log(err);
+            req.flash('error', 'Someting went wrong, Please try again');
+            res.redirect('/campgrounds/new');
         } else {
-            // REDIRECT TO CAMPGROUNDS PAGE
-            req.flash('success', 'Campground Created!!')
-            res.redirect('/campgrounds');
+            // NEW CAMPGROUND OBJECT
+            let newCampground = {
+                name: req.body.name,
+                image: req.body.image,
+                desc: req.body.description,
+                createdBy: req.user.username,
+                location: data.results[0].formatted_address,
+                lat: data.results[0].geometry.location.lat,
+                lng: data.results[0].geometry.location.lng,
+                price: req.body.price,
+                capacity: req.body.capacity,
+                instructors: req.body.instructors,
+                activities: req.body.activities,
+                phone: req.body.phone,
+                website: req.body.website
+            }
+
+            // CREATE CAMPGROUND
+            Campground.create(newCampground, function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    // REDIRECT TO CAMPGROUNDS PAGE
+                    req.flash('success', 'Campground Created!!')
+                    res.redirect('/campgrounds');
+                }
+            });
         }
     });
 });
