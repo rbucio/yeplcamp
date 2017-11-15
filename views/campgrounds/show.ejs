@@ -12,6 +12,8 @@
                     <li class="list-group-item"><strong>Website:</strong> <span class="pull-right"><%= campground.website %></span></li>
                     <li class="list-group-item"><strong>Activities:</strong> <span><%= campground.activities %></span></li>
                 </div>
+                <p class="lead">Map Location</p>
+                <div id='map' style="width: 100%; height: 400px"></div>
                 <p><a href="/campgrounds"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to Campgrounds</a></p>
             </div>
             <div class="col-md-9">
@@ -57,5 +59,38 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function initMap() {
+
+            let lat = <%= campground.lat %>;
+            let lng = <%= campground.lng %>;
+            let center = { lat: lat, lng: lng };
+            let map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: center,
+                scrollwheel: false
+            });
+
+            let content = `<h1><strong><%= campground.name %></strong></h1><br>
+                           <p><strong><%= campground.location %></strong></p><br>
+                           <p><%= campground.desc %></p>`;
+
+            let infowindow = new google.maps.InfoWindow({
+                content: content
+            });
+
+            let marker = new google.maps.Marker({
+                position: center,
+                map: map
+            });
+
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmdppF8ERSxg3dc1otmi9ig19qKjTpImk&callback=initMap"></script>
 
 <% include ../partials/footer %>
