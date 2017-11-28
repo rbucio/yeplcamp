@@ -28,7 +28,7 @@ router.post('/campgrounds', isLoggedIn, function(req, res) {
     // GET LOCATION DETAILS
     geocoder.geocode(req.body.location, function(err, data) {
         if (err) {
-            req.flash('error', 'Someting went wrong, Please try again');
+            req.flash('error', 'Something went wrong getting location');
             res.redirect('/campgrounds/new');
         } else {
             // NEW CAMPGROUND OBJECT
@@ -51,7 +51,8 @@ router.post('/campgrounds', isLoggedIn, function(req, res) {
             // CREATE CAMPGROUND
             Campground.create(newCampground, function(err) {
                 if (err) {
-                    console.log(err);
+                    req.flash('error', err.message);
+                    res.redirect('/campgrounds/new');
                 } else {
                     // REDIRECT TO CAMPGROUNDS PAGE
                     req.flash('success', 'Campground Created!!')
