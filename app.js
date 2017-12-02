@@ -18,6 +18,7 @@ const Campground = require('./models/campground');
 const User = require('./models/user')
 
 // PASSPORT CONFIG
+app.use(express.static(__dirname + "/public"));
 app.use(require('express-session')({
     secret: 'Secret Key',
     resave: false,
