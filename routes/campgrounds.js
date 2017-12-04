@@ -15,7 +15,7 @@ router.get('/campgrounds', function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            res.render('campgrounds/campgrounds', {campgrounds: campgrounds});
+            res.render('campgrounds/campgrounds', {campgrounds: campgrounds, page: 'home'});
         }
     });
 });
@@ -25,40 +25,22 @@ router.get('/campgrounds', function(req, res) {
 //
 router.post('/campgrounds', isLoggedIn, function(req, res) {
 
-    // GET LOCATION DETAILS
-    geocoder.geocode(req.body.location, function(err, data) {
+    let newCampground = {
+        name: req.body.name,
+        image: req.body.image,
+        desc: req.body.description,
+        createdBy: req.user.username
+    }
+
+    // CREATE CAMPGROUND
+    Campground.create(newCampground, function(err, camp) {
         if (err) {
-            req.flash('error', 'Something went wrong getting location');
+            req.flash('error', err.message);
             res.redirect('/campgrounds/new');
         } else {
-            // NEW CAMPGROUND OBJECT
-            let newCampground = {
-                name: req.body.name,
-                image: req.body.image,
-                desc: req.body.description,
-                createdBy: req.user.username,
-                location: data.results[0].formatted_address,
-                lat: data.results[0].geometry.location.lat,
-                lng: data.results[0].geometry.location.lng,
-                price: req.body.price,
-                capacity: req.body.capacity,
-                instructors: req.body.instructors,
-                activities: req.body.activities,
-                phone: req.body.phone,
-                website: req.body.website
-            }
-
-            // CREATE CAMPGROUND
-            Campground.create(newCampground, function(err) {
-                if (err) {
-                    req.flash('error', err.message);
-                    res.redirect('/campgrounds/new');
-                } else {
-                    // REDIRECT TO CAMPGROUNDS PAGE
-                    req.flash('success', 'Campground Created!!')
-                    res.redirect('/campgrounds');
-                }
-            });
+            // REDIRECT TO CAMPGROUNDS PAGE
+            req.flash('success', 'Campground created, you can update info at anytime.')
+            res.redirect('/campgrounds/' + camp._id);
         }
     });
 });
@@ -81,6 +63,7 @@ router.get('/campgrounds/:id', function(req, res) {
         if (err) {
             console.log(err);
         } else {
+            console.log(camp);
             res.render('campgrounds/show', {campground: camp});
         }
 
@@ -105,42 +88,67 @@ router.get('/campgrounds/:id/edit', isLoggedIn, function(req, res) {
 });
 
 //
-// HANDLE UPDATE LOGIC
+// HANDLE UPDATE INFORMATION LOGIC
 //
-router.post('/campgrounds/:id', isLoggedIn, function(req, res) {
+router.post('/campgrounds/:id/info', isLoggedIn, function(req, res) {
 
+    let newData = {
+        name: req.body.name,
+        image: req.body.image,
+        desc: req.body.description,
+        createdBy: req.user.username,
+        price: req.body.price,
+        capacity: req.body.capacity,
+        instructors: req.body.instructors,
+        activities: req.body.activities,
+        phone: req.body.phone,
+        website: req.body.website
+    }
 
-    // GET LOCATION DETAILS
-    geocoder.geocode(req.body.location, function(err, data) {
+    // UPDATE CAMPGROUND INFORMATION
+    Campground.findByIdAndUpdate(req.params.id, newData, function(err) {
         if (err) {
-            req.flash('error', 'Someting went wrong, Please try again');
-            res.redirect('/campgrounds/' + req.params.id + '/edit');
+            req.flash('error', 'Error Updating Campground');
+            res.redirect('/campgrounds/' + req.params.id);
         } else {
+            req.flash('success', 'Campground Updated Successfully');
+            res.redirect('/campgrounds/' + req.params.id);
+        }
+    });
 
-            let newData = {
-                name: req.body.name,
-                image: req.body.image,
-                desc: req.body.description,
-                createdBy: req.user.username,
-                location: data.results[0].formatted_address,
-                lat: data.results[0].geometry.location.lat,
-                lng: data.results[0].geometry.location.lng,
-                price: req.body.price,
-                capacity: req.body.capacity,
-                instructors: req.body.instructors,
-                activities: req.body.activities,
-                phone: req.body.phone,
-                website: req.body.website
-            }
+});
 
-            // CREATE CAMPGROUND
-            Campground.findByIdAndUpdate(req.params.id, newData, function(err) {
+//
+// UPDATE LOCATION LOGIC
+//
+router.post('/campgrounds/:id/location', function(req, res) {
+
+    Campground.findById(req.params.id, function(err, camp) {
+        if (err) {
+            req.flash('error', 'Error locating campground');
+            res.redirect('/campgrounds');
+        } else {
+            // GET LOCATION DETAILS
+            geocoder.geocode(req.body.location, function(err, data) {
                 if (err) {
-                    req.flash('error', 'Error Updating Campground');
-                    res.redirect('/campgrounds/' + req.params.id);
+                    req.flash('error', 'Error getting location');
+                    res.redirect('/campgrounds/' + req.params.id + '/edit');
                 } else {
-                    req.flash('success', 'Campground Updated Successfully');
-                    res.redirect('/campgrounds/' + req.params.id);
+                    // SET LOCATION DETAILS
+                    camp.location = data.results[0].formatted_address;
+                    camp.lat = data.results[0].geometry.location.lat;
+                    camp.lng = data.results[0].geometry.location.lng;
+
+                    // SAVE LOCATION DETAILS
+                    camp.save(function(err) {
+                        if (err) {
+                            req.flash('error', 'Error trying to save campground location');
+                            res.redirect('/campgrounds/' + req.params.id + '/edit');
+                        } else {
+                            req.flash('success', 'Location updated successfully');
+                            res.redirect('/campgrounds/' + req.params.id + '/edit');
+                        }
+                    })
                 }
             });
         }

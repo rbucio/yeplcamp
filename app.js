@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const flash = require('connect-flash');
+const moment = require('moment');
 const app = express();
 
 
@@ -15,7 +16,7 @@ mongoose.connect('mongodb://localhost/yelpCamp',{useMongoClient: true}, function
 // REQUIRE MODELS
 const Comment = require('./models/comment');
 const Campground = require('./models/campground');
-const User = require('./models/user')
+const User = require('./models/user');
 
 // PASSPORT CONFIG
 app.use(express.static(__dirname + "/public"));
@@ -36,6 +37,8 @@ app.use(flash());
 
 // LOCAL VARIABLES
 app.use(function(req, res, next) {
+    res.locals.page = '';
+    res.locals.moment = moment;
     res.locals.currentUser = req.user;
     res.locals.error = req.flash('error');
     res.locals.success = req.flash('success');

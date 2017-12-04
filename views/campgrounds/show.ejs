@@ -5,16 +5,35 @@
             <div class="col-md-4 pull">
                 <p class="lead">Campground Details</p>
                 <div class="list-group">
-                    <li class="list-group-item"><strong>Price:</strong> <span class="pull-right">$<%= campground.price %></span></li>
-                    <li class="list-group-item"><strong>Capacity:</strong> <span class="pull-right"><%= campground.capacity %></span></li>
-                    <li class="list-group-item"><strong>Instructors:</strong> <span class="pull-right"><%= campground.instructors %></span></li>
-                    <li class="list-group-item"><strong>Phone:</strong> <span class="pull-right"><%= campground.phone %></span></li>
-                    <li class="list-group-item"><strong>Website:</strong> <span class="pull-right"><%= campground.website %></span></li>
-                    <li class="list-group-item"><strong>Activities:</strong> <span><%= campground.activities %></span></li>
+                    <!-- campground price -->
+                    <% if (typeof campground.price == 'undefined' || campground.price === '') { %>
+                        <li class="list-group-item"><strong>Price:</strong> <span class="pull-right">N/A</span></li>
+                    <% } else { %>
+                        <li class="list-group-item"><strong>Price:</strong> <span class="pull-right">$<%= campground.price %></span></li>
+                    <% } %>
+                    <!-- campground phone -->
+                    <% if (typeof campground.phone == 'undefined' || campground.phone === '') { %>
+                        <li class="list-group-item"><strong>Phone:</strong> <span class="pull-right">N/A</span></li>
+                    <% } else { %>
+                        <li class="list-group-item"><strong>Phone:</strong> <span class="pull-right"><%= campground.phone %></span></li>
+                    <% } %>
+                    <!-- campground website -->
+                    <% if (typeof campground.website == 'undefined' || campground.website === '') { %>
+                        <li class="list-group-item"><strong>Website:</strong> <span class="pull-right">N/A</span></li>
+                    <% } else { %>
+                        <li class="list-group-item"><strong>Website:</strong> <span class="pull-right"><%= campground.website %></span></li>
+                    <% } %>
+                    <!-- campground activities -->
+                    <% if (typeof campground.activities == 'undefined' || campground.activities === '') { %>
+                        <li class="list-group-item"><strong>Activities:</strong> <span class="pull-right">N/A</span></li>
+                    <% } else { %>
+                        <li class="list-group-item"><strong>Activities:</strong> <span><%= campground.activities %></span></li>
+                    <% } %>
                 </div>
-                <p class="lead">Map Location</p>
-                <div id='map' style="width: 100%; height: 400px"></div>
-                <p><a href="/campgrounds"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to Campgrounds</a></p>
+                <% if (typeof campground.location != 'undefined') { %>
+                    <p class="lead">Map Location</p>
+                    <div id='map' style="width: 100%; height: 400px"></div>
+                <% } %>
             </div>
             <div class="col-md-8">
                 <div class="thumbnail">
@@ -22,11 +41,10 @@
                     <div class="caption">
                         <h2><%= campground.name %></h2>
                         <p><%= campground.desc %></p>
-                        <p><em>Submitted by <%= campground.createdBy %></em></p>
                         <% if (currentUser != null) {%>
                             <% if (campground.createdBy === currentUser.username) { %>
                                 <hr>
-                                <a href="/campgrounds/<%= campground._id %>/edit" class="btn btn-warning">Edit</a>
+                                <a href="/campgrounds/<%= campground._id %>/edit" class="btn btn-warning">Edit Information</a>
                                 <a href="/campgrounds/<%= campground._id %>/delete" class="btn btn-danger">Delete Campground</a>
                             <% } %>
                         <% } %>
@@ -42,13 +60,14 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <strong><%= comment.name %></strong>
-                                    <span class="pull-right">10 days ago</span>
+                                    <span class="pull-right"><%= moment(comment.createdAt).fromNow() %></span>
                                     <p><%= comment.comment %></p>
                                     <% if (currentUser != null) { %>
                                         <% if (comment.name === currentUser.username) { %>
-                                            <hr>
-                                            <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit" class="btn text-warning">Edit</a>
-                                            <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/delete" class="btn text-danger">Delete</a>
+                                            <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit" class="text-warning">Edit</a>
+                                            <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/delete" class="text-danger">Delete</a>
+                                            <br>
+                                            <br>
                                         <% } %>
                                     <% } %>
                                 </div>

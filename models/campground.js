@@ -2,45 +2,20 @@ const mongoose = require('mongoose');
 
 
 const campgroundSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Name is required']
-    },
+    name: String,
     image: String,
-    desc: {
-        type: String,
-        required: [true, 'Description is required']
-    },
+    desc: String,
     createdBy: String,
-    location: {
-        type: String,
-        required: [true, 'Location is required']
-    },
+    location: String,
     lat: Number,
     lng: Number,
-    price: {
-        type: String,
-        required: [true, 'Price is required']
-    },
-    capacity: {
-        type: String,
-        default: ''
-    },
-    instructors: {
-        type: String,
-        default: ''
-    },
-    activities: {
-        type: String,
-        default: ''
-    },
-    phone: {
-        type: String,
-        required: [true, 'A phone number is required']
-    },
-    website: {
-        type: String,
-        default: ''
+    price: String,
+    activities: String,
+    phone: String,
+    website: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
     },
     comments: [
         {
